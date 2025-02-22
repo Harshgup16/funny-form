@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Totally Rad Teen Survey</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+            color: #ff69b4;
+        }
+        .question {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .slider-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 80%;
+            height: 15px;
+            border-radius: 5px;
+            background: linear-gradient(to right, red, yellow, green, blue, purple);
+            outline: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        .slider-value {
+            font-weight: bold;
+            font-size: 18px;
+            min-width: 30px;
+            text-align: center;
+        }
+        #submit-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #submit-btn:hover {
+            background-color: #ff1493;
+        }
+        #taunt {
+            color: #ff69b4;
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+            height: 25px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤪 Totally Rad Teen Survey 🤪</h1>
+    <form id="survey-form">
+        <div class="question">
+            <p>How would I rate my partner's ability to sneak into my room for late-night study sessions (or something more fun)?</p>
+            <div class="slider-container">
+                <input type="range" min="0" max="14" value="7" class="slider" id="q1">
+                <span class="slider-value">7</span>
+                <img src="cat-1.jpg" alt="" srcset="">
+            </div>
+        </div>
+        <div class="question">
+            <p>On a scale of 0 to 14, how well does my partner manage to distract you from studying with their charm?</p>
+            <div class="slider-container">
+                <input type="range" min="0" max="14" value="7" class="slider" id="q2">
+                <span class="slider-value">7</span>
+            </div>
+        </div>
+        <div class="question">
+            <p>How would you rate your ability to balance homework and hobbies?How would I rate my partner's skill in finding creative excuses to skip class for a spontaneous adventure?</p>
+            <div class="slider-container">
+                <input type="range" min="0" max="14" value="7" class="slider" id="q3">
+                <span class="slider-value">7</span>
+            </div>
+        </div>
+        <div class="question">
+            <p>How well do I think my partner can balance studying and keeping the romance alive during finals week?</p>
+            <div class="slider-container">
+                <input type="range" min="0" max="14" value="7" class="slider" id="q4">
+                <span class="slider-value">7</span>
+            </div>
+        </div>
+        <div class="question">
+            <p>How would you rate Hawk-a-thoon? (Psst, only one right answer! 😉)</p>
+            <div class="slider-container">
+                <input type="range" min="0" max="14" value="14" class="slider" id="q5">
+                <span class="slider-value">14</span>
+            </div>
+            <div id="taunt"></div>
+            <img src="dog-paw-img.png" alt="">
+        </div>
+        <button type="submit" id="submit-btn">Submit Your Rad Answers!</button>
+    </form>
+
+    <script>
+        const sliders = document.querySelectorAll('.slider');
+        const values = document.querySelectorAll('.slider-value');
+        const lastSlider = sliders[sliders.length - 1];
+        const taunt = document.getElementById('taunt');
+        const taunts = [
+            "Nice try! 😜",
+            "Nuh-uh! 🙅‍♂",
+            "You can't change perfection! 💯",
+            "Resistance is futile! 🤖",
+            "We're always 14/14! 🌟"
+        ];
+
+        // Initialize all sliders
+        sliders.forEach((slider, index) => {
+            values[index].textContent = slider.value;
+            
+            slider.addEventListener('input', function() {
+                if (index === 4) { // Fixed index for last slider
+                    bounce();
+                } else {
+                    values[index].textContent = this.value;
+                }
+            });
+        });
+
+        function bounce() {
+            let start = null;
+            const duration = 500; // ms
+            const startValue = parseInt(lastSlider.value);
+
+            function step(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min(1, (timestamp - start) / duration);
+
+                if (progress < 1) {
+                    const bouncedValue = easeOutBack(progress, startValue, 14 - startValue, 1);
+                    lastSlider.value = Math.round(bouncedValue);
+                    values[4].textContent = lastSlider.value; // Fixed index
+                    requestAnimationFrame(step);
+                } else {
+                    lastSlider.value = 14;
+                    values[4].textContent = "14"; // Fixed index
+                    taunt.textContent = taunts[Math.floor(Math.random() * taunts.length)];
+                    setTimeout(() => { taunt.textContent = ''; }, 2000);
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        function easeOutBack(t, b, c, d) {
+            const s = 1.70158;
+            return c * ((t = t/d - 1) * t * ((s + 1) * t + s) + 1) + b;
+        }
+
+        document.getElementById('survey-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Thanks for your totally rad answers! You're awesome! 🎉");
+        });
+    </script>
+</body>
+</html>
